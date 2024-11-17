@@ -11,7 +11,8 @@ extension [A](xs: IndexedSeq[A])
 def fromString(str: IndexedSeq[String]): (Vector[Map.Number], Vector[Map]) =
   val inputSeeds = str.head.split(" ").tail.map(parse).toVector
   val mappings =
-    str.drop(2)
+    str
+      .drop(2)
       .split("")
       .map(
         _.tail.map { case s"$destination $source $len" =>
@@ -32,7 +33,7 @@ end fromString
 extension (mappings: Vector[Map])
   def multiApply(key: Map.Number): Map.Number =
     mappings.foldLeft(key): (acc, mapping) =>
-      mapping(acc)
+      mapping.get(acc)
 
 def lowestLocation(
     inputSeeds: Vector[Map.Number],
@@ -44,4 +45,4 @@ def minimumSeed(input: (Vector[Map.Number], Vector[Map])): Map.Number =
   lowestLocation(input._1, input._2)
 
 @main def problem1(): Unit =
-  println(minimumSeed(fromString(os.read.lines(wd/"problem1.txt"))))
+  println(minimumSeed(fromString(os.read.lines(wd / "problem1.txt"))))

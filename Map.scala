@@ -3,15 +3,14 @@ case class Map private (
 ):
   import Map.Number
 
-  def apply(key: Number): Number =
+  def get(key: Number): Number =
     mappings.find(_._1 contains key) match
       case Some((mapping, offset)) => key + offset
       case None                    => key
 
   def apply(keys: Set[NumericRange]): Set[NumericRange] =
-    keys
-      .merge(mappings.map(_._1))
-      .map(range => range.copy(start = apply(range.start)))
+    keys.splitRange(mappings.map(_._1))
+      .map(range => range.copy(start = get(range.start)))
 
 object Map:
   type Number = Long
@@ -22,4 +21,4 @@ object Map:
         val offset = destination - source
         (NumericRange(source, len), offset)
 
-    new Map(parsedMappings.toSet)
+    new Map(Set(parsedMappings*))
