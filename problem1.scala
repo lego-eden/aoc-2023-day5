@@ -1,26 +1,24 @@
 lazy val wd = os.pwd
 
-def parse(s: String): Map.Number = s.toLong
-
 extension [A](xs: IndexedSeq[A])
   def split(elem: A): IndexedSeq[IndexedSeq[A]] =
     xs.foldLeft(Vector(Vector.empty[A])): (acc, x) =>
       if x == elem then acc :+ Vector.empty
       else acc.updated(acc.indices.last, acc.last :+ x)
 
-def fromString(str: IndexedSeq[String]): (Vector[Map.Number], Vector[Map]) =
-  val inputSeeds = str.head.split(" ").tail.map(parse).toVector
+def fromString(str: IndexedSeq[String]): (Vector[Long], Vector[Map]) =
+  val inputSeeds = str.head.split(" ").tail.map(_.toLong).toVector
   val mappings =
     str
       .drop(2)
       .split("")
       .map(
         _.tail.map { case s"$destination $source $len" =>
-          (destination, source, len).map[[_] =>> Map.Number](
+          (destination, source, len).map[[_] =>> Long](
             [_] =>
               s =>
                 s match
-                  case s: String => parse(s.strip())
+                  case s: String => s.strip().toLong
           )
         }
       )
@@ -31,17 +29,17 @@ def fromString(str: IndexedSeq[String]): (Vector[Map.Number], Vector[Map]) =
 end fromString
 
 extension (mappings: Vector[Map])
-  def multiApply(key: Map.Number): Map.Number =
+  def multiApply(key: Long): Long =
     mappings.foldLeft(key): (acc, mapping) =>
       mapping.get(acc)
 
 def lowestLocation(
-    inputSeeds: Vector[Map.Number],
+    inputSeeds: Vector[Long],
     mappings: Vector[Map]
-): Map.Number =
+): Long =
   inputSeeds.map(mappings.multiApply).min
 
-def minimumSeed(input: (Vector[Map.Number], Vector[Map])): Map.Number =
+def minimumSeed(input: (Vector[Long], Vector[Map])): Long =
   lowestLocation(input._1, input._2)
 
 @main def problem1(): Unit =

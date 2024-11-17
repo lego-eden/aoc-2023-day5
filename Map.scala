@@ -1,9 +1,7 @@
 case class Map private (
-    val mappings: Set[(NumericRange, Map.Number)]
+    val mappings: Set[(NumericRange, Long)]
 ):
-  import Map.Number
-
-  def get(key: Number): Number =
+  def get(key: Long): Long =
     mappings.find(_._1 contains key) match
       case Some((mapping, offset)) => key + offset
       case None                    => key
@@ -13,9 +11,7 @@ case class Map private (
       .map(range => range.copy(start = get(range.start)))
 
 object Map:
-  type Number = Long
-
-  def apply(mappings: (Number, Number, Number)*): Map =
+  def apply(mappings: (Long, Long, Long)*): Map =
     val parsedMappings =
       for (destination, source, len) <- mappings yield
         val offset = destination - source

@@ -19,7 +19,7 @@ def minimumLocation =
       .min
   ).min
 
-extension (seeds: Vector[Map.Number])
+extension (seeds: Vector[Long])
   def toRanges: Vector[NumericRange] =
     seeds
       .grouped(2)
