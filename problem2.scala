@@ -1,15 +1,19 @@
 extension (mappings: Vector[Map])
-  def multiRangeApply(keys: Vector[NumericRange]): Vector[NumericRange] = 
+  def multiRangeApply(keys: Set[NumericRange]): Set[NumericRange] =
     mappings.foldLeft(keys): (acc, mapping) =>
       mapping(acc)
 
-def lowestLocation2(inputSeeds: Vector[Vector[NumericRange]], mappings: Vector[Map]): Map.Number =
-  inputSeeds.map(mappings.multiRangeApply)
-  ???
-
 @main def problem2(): Unit =
-  val (inputSeeds, mappings) = fromString(os.read(wd/"example1.txt"))
-  val inputSeedRanges = inputSeeds.grouped(2).map:
-    case Vector(start, length) => NumericRange(start, length)
+  println(minimumLocation)
 
-  
+def minimumLocation =
+  val (inputSeeds, mappings) = fromString(os.read.lines(wd/"example1.txt"))
+  val inputSeedRanges = inputSeeds
+    .grouped(2)
+    .collect:
+      case Vector(start, length) => NumericRange(start, length)
+  inputSeedRanges.minBy: range =>
+    mappings
+      .multiRangeApply(Set(range))
+      .map(_.start)
+      .min
